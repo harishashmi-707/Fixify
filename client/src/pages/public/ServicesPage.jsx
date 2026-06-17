@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Filter, Clock, MapPin, Star, Wrench } from 'lucide-react';
-import { api } from '../../contexts/AuthContext';
+import { api, assetUrl } from '../../contexts/AuthContext';
 
 const ServicesPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -129,7 +129,7 @@ const ServicesPage = () => {
                     <div className="glass-panel p-0 overflow-hidden group h-full flex flex-col">
                       <div className="h-48 bg-bg-tertiary relative overflow-hidden">
                         {service.image ? (
-                          <img src={`/uploads/services/${service.image}`} alt={service.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          <img src={assetUrl(`/uploads/services/${service.image}`)} alt={service.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-bg-tertiary to-bg-secondary">
                              <Wrench className="w-12 h-12 text-text-muted opacity-50" />

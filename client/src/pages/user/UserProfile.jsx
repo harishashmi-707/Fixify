@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User, Mail, Phone, MapPin, Lock, Camera } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
+import { api, assetUrl, useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 const UserProfile = () => {
@@ -56,7 +56,7 @@ const UserProfile = () => {
       <div className="glass-panel p-6 mb-6 flex items-center gap-6">
         <div className="relative">
           <img 
-            src={user?.avatar ? `/uploads/avatars/${user.avatar}` : 'https://ui-avatars.com/api/?name='+user?.name}
+            src={user?.avatar ? assetUrl(`/uploads/avatars/${user.avatar}`) : 'https://ui-avatars.com/api/?name='+user?.name}
             alt={user?.name}
             className="w-20 h-20 rounded-full object-cover border-2 border-border-glass"
           />

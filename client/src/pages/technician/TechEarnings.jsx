@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, Calendar, CheckCircle2 } from 'lucide-react';
-import { api } from '../../contexts/AuthContext';
+import { api, assetUrl } from '../../contexts/AuthContext';
 
 const TechEarnings = () => {
   const [bookings, setBookings] = useState([]);
@@ -84,7 +84,7 @@ const TechEarnings = () => {
                   <tr key={b._id} className="hover:bg-bg-tertiary/30 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img src={b.user?.avatar ? `http://localhost:5000/uploads/avatars/${b.user.avatar}` : `https://ui-avatars.com/api/?name=${b.user?.name}`} alt="" className="w-8 h-8 rounded-full object-cover border border-border-glass" />
+                        <img src={b.user?.avatar ? assetUrl(`/uploads/avatars/${b.user.avatar}`) : `https://ui-avatars.com/api/?name=${b.user?.name}`} alt="" className="w-8 h-8 rounded-full object-cover border border-border-glass" />
                         <span className="font-medium text-text-primary">{b.user?.name}</span>
                       </div>
                     </td>

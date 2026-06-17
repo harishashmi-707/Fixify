@@ -166,6 +166,42 @@ php -S localhost:8000 router.php
 # http://localhost:8000
 ```
 
+### Deploying front-end on Vercel and back-end on Render
+
+1. Create a Render web service for the Express backend.
+   - Repository: `server`
+   - Branch: your branch
+   - Build command: `npm install`
+   - Start command: `npm start`
+   - Root directory: `server`
+   - Environment variables:
+     - `PORT` (Render provides this automatically; you can leave blank or set to `5000`)
+     - `MONGO_URI` = your MongoDB Atlas connection string
+     - `JWT_SECRET` = strong secret value
+     - `NODE_ENV` = `production`
+     - `RATE_LIMIT_WINDOW_MS` = `60000`
+     - `RATE_LIMIT_MAX` = `100`
+
+2. Create a Vercel project for the React frontend.
+   - Repository: `client`
+   - Framework preset: Vite
+   - Build command: `npm run build`
+   - Output directory: `dist`
+   - Environment variable:
+     - `VITE_API_BASE_URL` = `https://<your-render-service>.onrender.com/api`
+
+3. Uploads and asset URLs
+   - The frontend uses `assetUrl(...)` to build upload asset links from `VITE_API_BASE_URL`.
+   - When deployed to Render, `/uploads` is served by the backend route at `/uploads`.
+   - On Render free plan, uploaded files may not persist permanently; use an external storage service for production-level persistence.
+
+4. Local development
+   - The local frontend uses Vite proxy to forward `/api` requests to `http://localhost:5000`.
+   - If you need a local API URL override, create `client/.env.local` with:
+     ```bash
+     VITE_API_BASE_URL=http://localhost:5000/api
+     ```
+
 ### Demo Accounts
 | Role | Email | Password |
 |------|-------|----------|

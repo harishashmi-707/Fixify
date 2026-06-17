@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { api } from '../../utils/api';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
@@ -12,12 +13,8 @@ const ContactPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      const data = await res.json();
+      const res = await api.post('/contact', formData);
+      const data = res.data;
       if (data.success) {
         toast.success('Message sent successfully! We will get back to you soon.');
         setFormData({ name: '', email: '', phone: '', subject: '', message: '' });

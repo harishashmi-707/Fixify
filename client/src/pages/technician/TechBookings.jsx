@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, MapPin, CheckCircle2, XCircle, ChevronRight } from 'lucide-react';
-import { api } from '../../contexts/AuthContext';
+import { api, assetUrl } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 const TechBookings = () => {
@@ -78,7 +78,7 @@ const TechBookings = () => {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-start gap-4 flex-grow">
                   <img
-                    src={booking.user?.avatar ? `/uploads/avatars/${booking.user.avatar}` : `https://ui-avatars.com/api/?name=${booking.user?.name}`}
+                    src={booking.user?.avatar ? assetUrl(`/uploads/avatars/${booking.user.avatar}`) : `https://ui-avatars.com/api/?name=${booking.user?.name}`}
                     alt={booking.user?.name}
                     className="w-12 h-12 rounded-full object-cover border border-border-glass shrink-0"
                   />

@@ -1,20 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-
-// Create an Axios instance with a relative API base path for production deployment.
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
-export const api = axios.create({
-  baseURL: apiBaseUrl,
-});
-
-// Interceptor to add auth token
-api.interceptors.request.use((config) => {
-  const tokens = JSON.parse(localStorage.getItem('authTokens'));
-  if (tokens?.accessToken) {
-    config.headers.Authorization = `Bearer ${tokens.accessToken}`;
-  }
-  return config;
-});
+import { api, assetUrl } from '../utils/api';
 
 const AuthContext = createContext(null);
 
@@ -74,3 +59,5 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+export { api, assetUrl };
+export { api, assetUrl };

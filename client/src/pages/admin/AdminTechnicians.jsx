@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Briefcase, Search, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
-import { api } from '../../contexts/AuthContext';
+import { api, assetUrl } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 const AdminTechnicians = () => {
@@ -79,7 +79,7 @@ const AdminTechnicians = () => {
                   <tr key={tech._id} className="hover:bg-bg-tertiary/30 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img src={tech.user?.avatar ? `/uploads/avatars/${tech.user?.avatar}` : `https://ui-avatars.com/api/?name=${tech.user?.name}`} className="w-10 h-10 rounded-full object-cover border border-border-glass" alt="" />
+                        <img src={tech.user?.avatar ? assetUrl(`/uploads/avatars/${tech.user?.avatar}`) : `https://ui-avatars.com/api/?name=${tech.user?.name}`} className="w-10 h-10 rounded-full object-cover border border-border-glass" alt="" />
                         <div>
                           <div className="font-semibold text-text-primary">{tech.user?.name}</div>
                           <div className="text-xs text-text-muted">{tech.user?.email}</div>

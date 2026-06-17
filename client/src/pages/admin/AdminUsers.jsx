@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Search, MoreVertical, Shield, UserX, UserCheck } from 'lucide-react';
-import { api } from '../../contexts/AuthContext';
+import { api, assetUrl } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 const AdminUsers = () => {
@@ -79,7 +79,7 @@ const AdminUsers = () => {
                   <tr key={u._id} className="hover:bg-bg-tertiary/30 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img src={u.avatar ? `/uploads/avatars/${u.avatar}` : `https://ui-avatars.com/api/?name=${u.name}`} className="w-10 h-10 rounded-full object-cover border border-border-glass" alt="" />
+                        <img src={u.avatar ? assetUrl(`/uploads/avatars/${u.avatar}`) : `https://ui-avatars.com/api/?name=${u.name}`} className="w-10 h-10 rounded-full object-cover border border-border-glass" alt="" />
                         <div>
                           <div className="font-semibold text-text-primary">{u.name}</div>
                           <div className="text-xs text-text-muted">{u.email}</div>

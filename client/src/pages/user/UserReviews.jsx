@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
-import { api } from '../../contexts/AuthContext';
+import { api, assetUrl } from '../../contexts/AuthContext';
 
 const UserReviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -38,7 +38,7 @@ const UserReviews = () => {
                   <div className="md:w-64 shrink-0 border-r border-border-glass pr-6">
                     <div className="text-sm text-text-muted mb-2">Technician</div>
                     <div className="flex items-center gap-3">
-                      <img src={r.technician?.user?.avatar ? `/uploads/avatars/${r.technician.user.avatar}` : `https://ui-avatars.com/api/?name=${r.technician?.user?.name}`} className="w-10 h-10 rounded-full object-cover" alt="" />
+                      <img src={r.technician?.user?.avatar ? assetUrl(`/uploads/avatars/${r.technician.user.avatar}`) : `https://ui-avatars.com/api/?name=${r.technician?.user?.name}`} className="w-10 h-10 rounded-full object-cover" alt="" />
                       <div className="font-semibold">{r.technician?.user?.name}</div>
                     </div>
                   </div>
