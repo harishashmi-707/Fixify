@@ -8,6 +8,8 @@
 # ─── Dependencies ───
 /vendor/
 /node_modules/
+/server/node_modules/
+/server/database_data/
 
 # ─── Cache ───
 /cache/
