@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Briefcase, MapPin, DollarSign, Camera } from 'lucide-react';
-import { api, assetUrl, useAuth } from '../../contexts/AuthContext';
+import { api, useAuth } from '../../contexts/AuthContext';
+import { getAvatarUrl } from '../../utils/uploadUrl';
 import toast from 'react-hot-toast';
 
 const TechProfile = () => {
@@ -64,7 +65,7 @@ const TechProfile = () => {
 
       <div className="glass-panel p-6 mb-6 flex items-center gap-6">
         <div className="relative">
-            <img src={user?.avatar ? assetUrl(`/uploads/avatars/${user.avatar}`) : 'https://ui-avatars.com/api/?name='+user?.name} alt={user?.name} className="w-20 h-20 rounded-full object-cover border-2 border-border-glass" />
+            <img src={getAvatarUrl(user?.avatar, user?.name)} alt={user?.name} className="w-20 h-20 rounded-full object-cover border-2 border-border-glass" />
           <button className="absolute bottom-0 right-0 w-8 h-8 bg-accent-emerald rounded-full flex items-center justify-center text-white shadow-lg hover:bg-emerald-400 transition-colors">
             <Camera className="w-4 h-4" />
           </button>

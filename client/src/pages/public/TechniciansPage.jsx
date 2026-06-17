@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Star, Filter, CheckCircle2 } from 'lucide-react';
-import { api, assetUrl } from '../../contexts/AuthContext';
+import { api } from '../../contexts/AuthContext';
+import { getAvatarUrl } from '../../utils/uploadUrl';
 
 const TechniciansPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -108,7 +109,7 @@ const TechniciansPage = () => {
               >
                 <div className="flex items-center gap-4 mb-4 pb-4 border-b border-border-glass">
                   <div className="relative">
-                    <img src={tech.user?.avatar ? assetUrl(`/uploads/avatars/${tech.user.avatar}`) : 'https://ui-avatars.com/api/?name='+tech.user?.name} alt={tech.user?.name} className="w-16 h-16 rounded-full object-cover border-2 border-border-glass" />
+                    <img src={getAvatarUrl(tech.user?.avatar, tech.user?.name)} alt={tech.user?.name} className="w-16 h-16 rounded-full object-cover border-2 border-border-glass" />
                     <div className="absolute -bottom-1 -right-1 bg-bg-primary rounded-full p-0.5">
                       <CheckCircle2 className="w-5 h-5 text-accent-cyan" />
                     </div>

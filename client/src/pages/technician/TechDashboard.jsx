@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, DollarSign, Activity, Star, Clock, MapPin, CheckCircle2 } from 'lucide-react';
-import { api, assetUrl, useAuth } from '../../contexts/AuthContext';
+import { api, useAuth } from '../../contexts/AuthContext';
+import { getAvatarUrl } from '../../utils/uploadUrl';
 
 const TechDashboard = () => {
   const { user } = useAuth();
@@ -117,7 +118,7 @@ const TechDashboard = () => {
                   
                   <div className="flex items-start gap-4 flex-grow">
                     <img 
-                      src={request.user?.avatar ? assetUrl(`/uploads/avatars/${request.user.avatar}`) : 'https://ui-avatars.com/api/?name='+request.user?.name} 
+                      src={getAvatarUrl(request.user?.avatar, request.user?.name)} 
                       alt={request.user?.name} 
                       className="w-12 h-12 rounded-full object-cover border border-border-glass shrink-0" 
                     />

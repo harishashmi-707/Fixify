@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Star, ShieldCheck, Clock, CheckCircle2, Award, ArrowLeft, Mail, Phone } from 'lucide-react';
-import { api, assetUrl, useAuth } from '../../contexts/AuthContext';
+import { api, useAuth } from '../../contexts/AuthContext';
+import { getAvatarUrl } from '../../utils/uploadUrl';
 
 const TechnicianProfilePage = () => {
   const { id } = useParams();
@@ -51,7 +52,7 @@ const TechnicianProfilePage = () => {
             <div className="absolute -top-20 -right-20 w-64 h-64 bg-accent-cyan/10 blur-[80px] rounded-full pointer-events-none"></div>
             
             <img 
-              src={tech.user?.avatar ? assetUrl(`/uploads/avatars/${tech.user.avatar}`) : 'https://ui-avatars.com/api/?name='+tech.user?.name} 
+              src={getAvatarUrl(tech.user?.avatar, tech.user?.name)} 
               alt={tech.user?.name} 
               className="w-32 h-32 md:w-40 md:h-40 rounded-2xl object-cover border-4 border-bg-secondary shadow-lg z-10 relative" 
             />

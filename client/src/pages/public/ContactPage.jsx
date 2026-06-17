@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { api } from '../../utils/api';
+import { api } from '../../contexts/AuthContext';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' });

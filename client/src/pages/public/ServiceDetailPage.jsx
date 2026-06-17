@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Clock, ShieldCheck, CheckCircle2, MapPin, Star, ArrowLeft } from 'lucide-react';
-import { api, assetUrl, useAuth } from '../../contexts/AuthContext';
+import { api, useAuth } from '../../contexts/AuthContext';
+import { getAvatarUrl } from '../../utils/uploadUrl';
 import toast from 'react-hot-toast';
 
 const ServiceDetailPage = () => {
@@ -117,7 +118,7 @@ const ServiceDetailPage = () => {
                   className="glass-panel p-6 flex flex-col hover:border-accent-cyan transition-colors"
                 >
                   <div className="flex items-start gap-4 mb-4">
-                    <img src={tech.user?.avatar ? assetUrl(`/uploads/avatars/${tech.user.avatar}`) : 'https://ui-avatars.com/api/?name='+tech.user?.name} alt={tech.user?.name} className="w-16 h-16 rounded-full object-cover border-2 border-border-glass" />
+                    <img src={getAvatarUrl(tech.user?.avatar, tech.user?.name)} alt={tech.user?.name} className="w-16 h-16 rounded-full object-cover border-2 border-border-glass" />
                     <div>
                       <h3 className="text-lg font-bold flex items-center gap-2">
                         {tech.user?.name}

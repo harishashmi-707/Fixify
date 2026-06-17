@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { useAuth, assetUrl } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { getAvatarUrl } from '../../utils/uploadUrl';
 import { 
   LayoutDashboard, Calendar, MessageSquare, Star, User, 
   Settings, DollarSign, Users, Briefcase, FileText, Activity, LogOut
@@ -76,7 +77,7 @@ const Sidebar = () => {
       <aside className="hidden md:flex flex-col w-64 shrink-0 bg-bg-secondary border-r border-border-glass sticky top-[var(--navbar-height)] self-start h-[calc(100vh-var(--navbar-height))] overflow-y-auto z-10">
         <div className="px-6 pt-6 pb-4 text-center">
           <div className="w-20 h-20 mx-auto rounded-full bg-bg-tertiary border-2 border-border-glass overflow-hidden mb-3">
-            <img src={user.avatar ? assetUrl(`/uploads/avatars/${user.avatar}`) : 'https://ui-avatars.com/api/?name='+user.name} alt={user.name} className="w-full h-full object-cover" />
+            <img src={getAvatarUrl(user.avatar, user.name)} alt={user.name} className="w-full h-full object-cover" />
           </div>
           <h4 className="font-semibold text-text-primary">{user.name}</h4>
           <p className="text-xs text-text-muted capitalize">{role}</p>
