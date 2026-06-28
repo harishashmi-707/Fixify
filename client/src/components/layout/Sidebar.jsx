@@ -27,6 +27,7 @@ const Sidebar = () => {
     links = [
       { to: '/technician/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
       { to: '/technician/bookings', icon: Calendar, label: 'Job Requests' },
+      { to: '/technician/messages', icon: MessageSquare, label: 'Messages' },
       { to: '/technician/earnings', icon: DollarSign, label: 'Earnings' },
       { to: '/technician/availability', icon: Activity, label: 'Availability' },
       { to: '/technician/profile', icon: User, label: 'Professional Profile' },

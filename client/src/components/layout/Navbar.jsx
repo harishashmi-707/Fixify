@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Wrench, Menu, X, Sun, Moon, Bell, User, LogOut } from 'lucide-react';
+import { Wrench, Menu, X, Sun, Moon, Bell, User, LogOut, Check } from 'lucide-react';
+import { api } from '../../contexts/AuthContext';
+import { useSocket } from '../../contexts/SocketContext';
+import toast from 'react-hot-toast';
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
@@ -17,7 +20,51 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { socket } = useSocket();
   const location = useLocation();
+
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchNotifications();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (!socket) return;
+    
+    const handleNewNotification = (notification) => {
+      setNotifications(prev => [notification, ...prev].slice(0, 50));
+      setUnreadCount(prev => prev + 1);
+      toast(notification.message, { icon: '🔔' });
+    };
+
+    socket.on('new_notification', handleNewNotification);
+    return () => socket.off('new_notification', handleNewNotification);
+  }, [socket]);
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await api.get('/notifications');
+      setNotifications(res.data.data);
+      setUnreadCount(res.data.unreadCount);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const markAllRead = async () => {
+    try {
+      await api.put('/notifications/read-all');
+      setUnreadCount(0);
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const isLinkActive = (path) => {
     if (path === '/') {
@@ -83,10 +130,50 @@ const Navbar = () => {
 
           {isAuthenticated ? (
             <div className="flex items-center gap-4">
-              <button className="relative p-2 text-text-secondary hover:text-text-primary transition-colors">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-danger rounded-full"></span>
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="relative p-2 text-text-secondary hover:text-text-primary transition-colors focus:outline-none"
+                >
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-0 right-0 w-4 h-4 bg-danger rounded-full flex items-center justify-center text-[10px] text-white font-bold border border-bg-primary">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Notifications Dropdown */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 bg-bg-secondary border border-border-glass rounded-xl shadow-glass overflow-hidden z-50">
+                    <div className="p-3 border-b border-border-glass flex justify-between items-center bg-bg-tertiary">
+                      <h3 className="font-semibold text-text-primary">Notifications</h3>
+                      {unreadCount > 0 && (
+                        <button onClick={markAllRead} className="text-xs text-accent-cyan hover:underline flex items-center gap-1">
+                          <Check className="w-3 h-3" /> Mark all read
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.slice(0, 10).map(notif => (
+                          <div key={notif._id} className={`p-3 border-b border-border-glass last:border-0 hover:bg-bg-tertiary transition-colors ${!notif.isRead ? 'bg-bg-tertiary/50' : ''}`}>
+                            <div className="flex gap-3">
+                              <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!notif.isRead ? 'bg-accent-cyan' : 'bg-transparent'}`}></div>
+                              <div>
+                                <p className="text-sm text-text-primary">{notif.message}</p>
+                                <span className="text-xs text-text-muted mt-1 block">{new Date(notif.createdAt).toLocaleDateString()}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-4 text-center text-text-muted text-sm">No notifications</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
               
               <Link to={`/${user?.role}/dashboard`} className="flex items-center gap-2 bg-bg-tertiary border border-border-glass py-1.5 px-3 rounded-full hover:border-accent-emerald transition-colors">
                 <div className="w-6 h-6 rounded-full bg-accent-emerald/20 flex items-center justify-center text-accent-emerald">

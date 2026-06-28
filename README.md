@@ -1,325 +1,642 @@
-# FixIt Hub Pakistan 🔧
+# Fixify 🔧
 
-**Pakistan's Premier Home Services Platform**  
-Book verified technicians for mobile repair, electrician, plumbing, AC services and more.
+**Pakistan's Premier Home Services Platform**
+Book verified technicians for plumbing, electrical, AC, cleaning, mobile repair, and more.
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue)
-![PHP](https://img.shields.io/badge/PHP-8.1+-purple)
-![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange)
+![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=nodedotjs&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-8.0+-47A248?logo=mongodb&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-Enabled-3448C5?logo=cloudinary&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
-## 🚀 Features
+## 📖 Table of Contents
 
-### Core Features
-- ✅ **User Registration & Authentication** — Secure login with password hashing
-- ✅ **Service Browsing** — Browse categories, search, filter by price/category
-- ✅ **Technician Profiles** — Verified technicians with ratings & reviews
-- ✅ **Booking System** — Full booking lifecycle with 8 status workflow
-- ✅ **Real-time Notifications** — 6 notification types (booking, message, payment, system, review, admin)
-- ✅ **Messaging System** — Direct communication between users and technicians
-- ✅ **Admin Dashboard** — Full platform management with Chart.js analytics
-- ✅ **Review System** — Star ratings with technician replies
+- [Project Overview](#-project-overview)
+- [Technology Stack](#-technology-stack)
+- [Features by Role](#-features-by-role)
+- [Project Structure](#-project-structure)
+- [Database Schema](#-database-schema)
+- [API Reference](#-api-reference)
+- [WebSocket Events](#-websocket-real-time-events)
+- [Frontend Pages & Components](#-frontend-pages--components)
+- [Image Storage (Cloudinary)](#-image-storage-cloudinary)
+- [Security](#-security)
+- [Setup & Installation](#-setup--installation)
+- [Environment Variables](#-environment-variables)
+- [Demo Accounts](#-demo-accounts)
+- [Deployment Guide](#-deployment-guide)
+- [Future Roadmap](#-future-roadmap)
+- [License](#-license)
 
-### Architecture & Security
-- ✅ **Environment Configuration** — `.env` file for all credentials
-- ✅ **MVC Structure** — Organized `app/` with controllers, models, helpers, middleware
-- ✅ **JWT API Authentication** — Stateless tokens for mobile app support
-- ✅ **CSRF Protection** — Token-based form protection
-- ✅ **Rate Limiting** — File-based request throttling
-- ✅ **Login Attempt Tracking** — Brute-force protection with account lockout
-- ✅ **Secure Headers** — CSP, X-Frame-Options, XSS protection
-- ✅ **File Upload Security** — Randomized filenames, type validation, PHP injection detection
+---
 
-### Payment Integration (Pakistan)
-- ✅ **JazzCash** — Mock integration ready for production credentials
-- ✅ **EasyPaisa** — Mock integration ready for production credentials
-- ✅ **Cash on Delivery** — Default payment method
-- ✅ **Bank Transfer** — Manual payment option
-- ✅ **Refund Processing** — Automated refund workflow
+## 🚀 Project Overview
 
-### Performance
-- ✅ **File Caching** — Categories, services, and homepage stats
-- ✅ **Image Optimization** — WebP conversion, compression, auto-resize
-- ✅ **Lazy Loading** — Native lazy loading for all images
-- ✅ **Gzip Compression** — Apache mod_deflate configuration
-- ✅ **Static Asset Caching** — Browser caching via mod_expires
+Fixify is a full-stack MERN web application that connects homeowners with verified service professionals across Pakistan. The platform features role-based dashboards for Users, Technicians, and Admins, a real-time messaging system powered by Socket.io, cloud-based image storage via Cloudinary, and interactive analytics dashboards.
 
-### SEO
-- ✅ **Dynamic Meta Tags** — Per-page title, description, keywords
-- ✅ **Open Graph Tags** — Facebook/social media sharing
-- ✅ **Twitter Cards** — Twitter sharing optimization
-- ✅ **JSON-LD Structured Data** — Schema.org LocalBusiness markup
-- ✅ **Dynamic Sitemap** — Auto-generated from database content
-- ✅ **robots.txt** — Search engine crawl directives
-- ✅ **Clean URLs** — Apache rewrite rules (no .php extensions)
+---
+
+## 💻 Technology Stack
 
 ### Frontend
-- ✅ **Bootstrap 5.3** — Responsive UI framework
-- ✅ **AOS Animations** — Scroll-based animations
-- ✅ **Font Awesome 6** — Extended icon library
-- ✅ **Bootstrap Icons** — Primary icon set
-- ✅ **SweetAlert2** — Beautiful alert dialogs and confirmations
-- ✅ **Chart.js 4** — Interactive admin analytics charts
-- ✅ **Google Fonts (Inter)** — Modern typography
+
+| Technology | Version | Purpose |
+|---|---|---|
+| React | 19.x | UI framework |
+| Vite | 8.x | Build tool & dev server |
+| React Router | 7.x | Client-side routing & protected routes |
+| Tailwind CSS | 4.x | Utility-first styling |
+| Framer Motion | 12.x | Page transitions & micro-animations |
+| Axios | 1.x | HTTP client with JWT interceptors |
+| Socket.io-client | 4.x | Real-time WebSocket communication |
+| Recharts | 3.x | Dashboard analytics charts |
+| Lucide React | 1.x | Icon library |
+| React Icons | 5.x | Extended icon set |
+| React Hot Toast | 2.x | Toast notifications |
+| date-fns | 4.x | Date formatting utilities |
+
+### Backend
+
+| Technology | Version | Purpose |
+|---|---|---|
+| Node.js | 20+ | Runtime |
+| Express.js | 4.x | REST API framework |
+| MongoDB | 8.x | NoSQL database |
+| Mongoose | 8.x | ODM with schema validation |
+| Socket.io | 4.x | Real-time WebSocket server |
+| Cloudinary | latest | Cloud image storage (WebP) |
+| Multer | 1.x | Multipart file upload parsing |
+| multer-storage-cloudinary | latest | Cloudinary storage engine for Multer |
+| JSON Web Tokens | 9.x | Stateless authentication |
+| bcryptjs | 2.x | Password hashing |
+| Helmet | 7.x | HTTP security headers |
+| express-rate-limit | 7.x | DDoS / brute-force protection |
+| express-validator | 7.x | Input validation |
+| Morgan | 1.x | HTTP request logging |
+| CORS | 2.x | Cross-origin resource sharing |
+| Sharp | 0.33 | Server-side image processing |
+
+---
+
+## ✨ Features by Role
+
+### 👤 Users (Customers)
+- Browse services by category with search and filters
+- View technician profiles with ratings, reviews, skills, and availability
+- Book services with date, time, address, and description
+- Track booking status (Pending → Accepted → Completed)
+- Real-time chat with assigned technicians
+- Leave star ratings (1–5) and written reviews
+- Manage profile and upload avatar
+- Receive real-time notifications for booking updates
+
+### 👨‍🔧 Technicians (Service Providers)
+- Dedicated dashboard with job stats, earnings, and rating overview
+- Accept or reject incoming booking requests
+- View active jobs and completed booking history
+- Set custom pricing for offered services
+- Configure weekly availability schedule
+- Real-time chat with customers
+- Track earnings with visual analytics charts
+- Manage professional profile (bio, skills, hourly rate)
+
+### 👑 Administrators
+- Global analytics dashboard: revenue, user growth, booking volume
+- Full CRUD management for users and technicians
+- Approve or ban technician accounts
+- Full CRUD management for services and categories (with image upload)
+- View and manage all platform bookings
+- Access revenue reports with interactive charts
+- View and manage contact form submissions
 
 ---
 
 ## 📁 Project Structure
 
 ```
-fixithub/
-├── app/                          # MVC Application Layer
-│   ├── controllers/
-│   │   └── Controller.php        # Base controller
-│   ├── models/
-│   │   ├── Model.php             # Base model (CRUD)
-│   │   ├── BookingModel.php      # Booking with status workflow
-│   │   ├── UserModel.php         # User operations
-│   │   └── ServiceModel.php      # Service operations
-│   ├── views/                    # Future view templates
-│   ├── helpers/
-│   │   ├── Cache.php             # File-based caching
-│   │   ├── ImageOptimizer.php    # WebP conversion & compression
-│   │   ├── PaymentGateway.php    # JazzCash & EasyPaisa
-│   │   └── SEO.php               # Meta tags & Open Graph
-│   └── middleware/
-│       ├── Security.php          # Headers, rate limiting, uploads
-│       └── JWTAuth.php           # API token authentication
-├── admin/                        # Admin panel pages
-├── api/                          # REST API endpoints
-│   ├── auth.php                  # JWT login/refresh/me
-│   ├── payment.php               # Payment initiation/callbacks
-│   ├── notifications.php         # Notification API
-│   └── search.php                # Search API
-├── assets/
-│   ├── css/style.css             # Main stylesheet
-│   ├── js/app.js                 # Main JavaScript
-│   └── images/                   # Static images
-├── auth/                         # Authentication pages
-├── config/
-│   ├── env.php                   # Environment loader
-│   ├── database.php              # PDO connection
-│   ├── constants.php             # App constants
-│   └── session.php               # Session management
-├── database/
-│   ├── schema.sql                # Database schema v1
-│   ├── migration_v2.sql          # Enhanced schema migration
-│   └── seed.sql                  # Sample data
-├── includes/
-│   ├── auth.php                  # Auth middleware
-│   ├── csrf.php                  # CSRF protection
-│   ├── functions.php             # Helper functions
-│   ├── header.php                # Global header template
-│   ├── footer.php                # Global footer template
-│   ├── navbar.php                # Navigation bar
-│   └── sidebar.php               # Dashboard sidebar
-├── technician/                   # Technician panel
-├── user/                         # User panel
-├── uploads/                      # User uploads
-├── cache/                        # File cache (auto-created)
-├── .env                          # Environment config (DO NOT COMMIT)
-├── .env.example                  # Environment template
-├── .gitignore                    # Git ignore rules
-├── .htaccess                     # Apache config & security
-├── router.php                    # PHP dev server router
-├── robots.txt                    # SEO crawl rules
-├── sitemap.php                   # Dynamic XML sitemap
-└── README.md                     # This file
+fixify/
+├── client/                          # React Frontend (Vite)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── layout/              # Navbar, Footer, Sidebar, DashboardLayout
+│   │   │   ├── HeroAnimation.jsx    # Animated hero section with Framer Motion
+│   │   │   └── ProtectedRoute.jsx   # Role-based route guard
+│   │   ├── contexts/
+│   │   │   ├── AuthContext.jsx      # JWT auth state, login/logout, Axios interceptors
+│   │   │   ├── SocketContext.jsx    # Socket.io client initialization & reconnection
+│   │   │   └── ThemeContext.jsx     # Dark/light mode toggle
+│   │   ├── pages/
+│   │   │   ├── public/              # 10 pages: Home, About, Services, Technicians, etc.
+│   │   │   ├── user/                # 5 pages: Dashboard, Bookings, Messages, Profile, Reviews
+│   │   │   ├── technician/          # 6 pages: Dashboard, Bookings, Messages, Profile, Earnings, Availability
+│   │   │   └── admin/               # 6 pages: Dashboard, Services, Users, Technicians, Bookings, Reports
+│   │   ├── utils/
+│   │   │   └── uploadUrl.js         # Smart URL resolver (Cloudinary / local fallback)
+│   │   ├── App.jsx                  # Root routing configuration
+│   │   └── index.css                # Tailwind config & CSS custom properties
+│   ├── vite.config.js               # Vite config with API proxy
+│   └── package.json
+│
+├── server/                          # Express Backend
+│   ├── config/
+│   │   ├── db.js                    # MongoDB connection via Mongoose
+│   │   └── constants.js             # Role enums and app constants
+│   ├── controllers/                 # 11 controllers (business logic)
+│   │   ├── authController.js        # Register, Login, JWT refresh, Profile, Avatar upload
+│   │   ├── adminController.js       # Dashboard stats, User/Tech CRUD, Booking management
+│   │   ├── bookingController.js     # Create, list, update status
+│   │   ├── categoryController.js    # CRUD with Cloudinary image upload
+│   │   ├── contactController.js     # Contact form submission & admin management
+│   │   ├── messageController.js     # Conversations, send/receive, mark read
+│   │   ├── notificationController.js # List, mark read, mark all read
+│   │   ├── paymentController.js     # Create, list by booking, update status
+│   │   ├── reviewController.js      # Create, list by technician, reply
+│   │   ├── serviceController.js     # CRUD with Cloudinary image upload
+│   │   └── technicianController.js  # List, get by ID, update profile
+│   ├── middleware/
+│   │   ├── auth.js                  # JWT verification, role authorization, token generation
+│   │   ├── errorHandler.js          # Global error handler
+│   │   └── upload.js                # Multer + Cloudinary storage (auto WebP conversion)
+│   ├── models/                      # 12 Mongoose schemas
+│   │   ├── User.js                  # Users with password hashing
+│   │   ├── Technician.js            # Professional profiles linked to Users
+│   │   ├── Category.js              # Service categories
+│   │   ├── Service.js               # Individual services
+│   │   ├── Booking.js               # Service bookings with status history
+│   │   ├── Message.js               # Chat messages
+│   │   ├── Notification.js          # System notifications
+│   │   ├── Review.js                # Ratings and reviews
+│   │   ├── Payment.js               # Payment records
+│   │   ├── ContactMessage.js        # Contact form entries
+│   │   ├── AdminLog.js              # Admin action audit trail
+│   │   └── Setting.js               # Platform settings
+│   ├── routes/                      # 11 Express route files
+│   ├── uploads/                     # Legacy local image storage (migrated to Cloudinary)
+│   ├── app.js                       # Express app setup, middleware, route mounting
+│   ├── server.js                    # HTTP server, Socket.io initialization
+│   ├── seedDemo.js                  # Demo data seeder (users, services, bookings, messages)
+│   ├── migrateCloudinary.js         # One-time migration script (local → Cloudinary)
+│   └── package.json
+│
+└── README.md                        # This file
 ```
 
 ---
 
-## ⚡ Quick Start
+## 🗄️ Database Schema
 
-### Prerequisites
-- PHP 8.1+ with GD extension
-- MySQL 8.0+
-- Apache with mod_rewrite (or PHP built-in server)
+### User
+| Field | Type | Description |
+|---|---|---|
+| name | String | Full name (required) |
+| email | String | Unique, lowercase (required) |
+| phone | String | Contact number |
+| password | String | Bcrypt-hashed, hidden from queries |
+| role | Enum | `user`, `technician`, or `admin` |
+| avatar | String | Cloudinary URL |
+| city | String | User's city |
+| address | String | Full address |
+| isActive | Boolean | Account active status |
+| lastLogin | Date | Last login timestamp |
 
-### Installation
+### Technician
+| Field | Type | Description |
+|---|---|---|
+| user | ObjectId → User | Reference to user account |
+| cnic | String | National ID number |
+| status | Enum | `pending`, `approved`, `rejected` |
+| bio | String | Professional description |
+| skills | [String] | Array of skill tags |
+| hourlyRate | Number | Rate per hour in PKR |
+| avgRating | Number | Calculated average rating |
+| totalReviews | Number | Total review count |
+| totalJobs | Number | Completed job count |
+| experienceYears | Number | Years of experience |
+| services | [{ service: ObjectId, customPrice: Number }] | Offered services with pricing |
+| availability | { days: [String], startTime, endTime } | Weekly schedule |
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/yourusername/fixithub-pakistan.git
-cd fixithub-pakistan
+### Service
+| Field | Type | Description |
+|---|---|---|
+| name | String | Service name |
+| slug | String | URL-friendly identifier |
+| category | ObjectId → Category | Parent category |
+| basePrice | Number | Starting price in PKR |
+| duration | String | Estimated time |
+| description | String | Service details |
+| image | String | Cloudinary URL |
+| isActive | Boolean | Visibility toggle |
 
-# 2. Copy environment file
-cp .env.example .env
+### Category
+| Field | Type | Description |
+|---|---|---|
+| name | String | Category name |
+| slug | String | URL-friendly identifier |
+| description | String | Category details |
+| image | String | Cloudinary URL |
+| isActive | Boolean | Visibility toggle |
 
-# 3. Edit .env with your database credentials
-# DB_HOST=localhost
-# DB_NAME=fixithub_pakistan
-# DB_USER=root
-# DB_PASS=
+### Booking
+| Field | Type | Description |
+|---|---|---|
+| bookingNumber | String | Unique booking ID (e.g. FIX-20260001) |
+| user | ObjectId → User | Customer |
+| technician | ObjectId → Technician | Assigned professional |
+| service | ObjectId → Service | Requested service |
+| bookingDate | Date | Scheduled date |
+| bookingTime | String | Scheduled time |
+| address / city / phone | String | Service location details |
+| description | String | Problem description |
+| totalAmount | Number | Final price in PKR |
+| status | Enum | `pending`, `accepted`, `completed`, `cancelled` |
+| statusHistory | [{ status, notes, changedBy, createdAt }] | Full audit trail |
+| completedAt | Date | Completion timestamp |
 
-# 4. Import database
-mysql -u root -p < database/schema.sql
-mysql -u root -p fixithub_pakistan < database/seed.sql
-mysql -u root -p fixithub_pakistan < database/migration_v2.sql
+### Message
+| Field | Type | Description |
+|---|---|---|
+| sender | ObjectId → User | Message author |
+| receiver | ObjectId → User | Message recipient |
+| message | String | Text content |
+| isRead | Boolean | Read receipt |
 
-# 5. Start development server
-php -S localhost:8000 router.php
+### Notification
+| Field | Type | Description |
+|---|---|---|
+| user | ObjectId → User | Notification recipient |
+| title | String | Notification title |
+| message | String | Notification body |
+| type | Enum | `booking`, `message`, `payment`, `system`, `review`, `admin` |
+| isRead | Boolean | Read status |
 
-# 6. Open in browser
-# http://localhost:8000
-```
-
-### Deploying front-end on Vercel and back-end on Render
-
-1. Create a Render web service for the Express backend.
-   - Repository: `server`
-   - Branch: your branch
-   - Build command: `npm install`
-   - Start command: `npm start`
-   - Root directory: `server`
-   - Environment variables:
-     - `PORT` (Render provides this automatically; you can leave blank or set to `5000`)
-     - `MONGO_URI` = your MongoDB Atlas connection string
-     - `JWT_SECRET` = strong secret value
-     - `NODE_ENV` = `production`
-     - `RATE_LIMIT_WINDOW_MS` = `60000`
-     - `RATE_LIMIT_MAX` = `100`
-
-2. Create a Vercel project for the React frontend.
-   - Repository: `client`
-   - Framework preset: Vite
-   - Build command: `npm run build`
-   - Output directory: `dist`
-   - Environment variable:
-     - `VITE_API_BASE_URL` = `https://<your-render-service>.onrender.com/api`
-
-3. Uploads and asset URLs
-   - The frontend uses `assetUrl(...)` to build upload asset links from `VITE_API_BASE_URL`.
-   - When deployed to Render, `/uploads` is served by the backend route at `/uploads`.
-   - On Render free plan, uploaded files may not persist permanently; use an external storage service for production-level persistence.
-
-4. Local development
-   - The local frontend uses Vite proxy to forward `/api` requests to `http://localhost:5000`.
-   - If you need a local API URL override, create `client/.env.local` with:
-     ```bash
-     VITE_API_BASE_URL=http://localhost:5000/api
-     ```
-
-### Demo Accounts
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@fixithub.pk | password |
-| User | ahmed@example.com | password |
-| Technician | usman@example.com | password |
-
----
-
-## 🔄 Booking Status Flow
-
-```
-pending → accepted → technician_on_way → in_progress → completed
-    ↓         ↓              ↓                ↓            ↓
-cancelled  cancelled     cancelled         disputed     refunded
-                                               ↓
-                                           refunded / completed
-```
-
----
-
-## 🔐 API Documentation
-
-### Authentication
-```bash
-# Login (get JWT tokens)
-POST /api/auth?action=login
-Body: { "email": "user@example.com", "password": "password" }
-
-# Refresh token
-POST /api/auth?action=refresh
-Body: { "refresh_token": "..." }
-
-# Get current user
-GET /api/auth?action=me
-Header: Authorization: Bearer <access_token>
-```
+### Review
+| Field | Type | Description |
+|---|---|---|
+| user | ObjectId → User | Reviewer |
+| technician | ObjectId → Technician | Reviewed professional |
+| booking | ObjectId → Booking | Associated booking |
+| rating | Number | 1–5 star rating |
+| comment | String | Written feedback |
+| reply | String | Technician's response |
+| status | Enum | `pending`, `approved`, `rejected` |
 
 ### Payment
-```bash
-# Initiate payment
-POST /api/payment?action=initiate
-Body: { "booking_id": 1, "method": "jazzcash" }
+| Field | Type | Description |
+|---|---|---|
+| booking | ObjectId → Booking | Associated booking |
+| amount | Number | Payment amount in PKR |
+| method | Enum | `cod`, `jazzcash`, `easypaisa`, `bank_transfer` |
+| status | Enum | `pending`, `completed`, `failed`, `refunded` |
+| transactionId | String | Gateway reference |
 
-# Get payment methods
-GET /api/payment?action=methods
+---
+
+## 🔐 API Reference
+
+**Base URL:** `/api`
+All protected routes require `Authorization: Bearer <jwt_token>` header.
+
+### Authentication (`/api/auth`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/register` | Public | Create new user/technician account |
+| POST | `/login` | Public | Authenticate and receive JWT tokens |
+| POST | `/refresh` | Public | Refresh expired access token |
+| GET | `/me` | Protected | Get current user profile |
+| PUT | `/profile` | Protected | Update name, phone, city, address |
+| PUT | `/password` | Protected | Change password |
+| PUT | `/avatar` | Protected | Upload avatar image (→ Cloudinary) |
+
+### Services (`/api/services`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/` | Public | List services (`?category=`, `?search=`) |
+| GET | `/:slug` | Public | Get service details by slug |
+| POST | `/` | Admin | Create service with image upload |
+| PUT | `/:id` | Admin | Update service |
+| DELETE | `/:id` | Admin | Delete service |
+
+### Categories (`/api/categories`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/` | Public | List all active categories |
+| POST | `/` | Admin | Create category with image upload |
+| PUT | `/:id` | Admin | Update category |
+| DELETE | `/:id` | Admin | Delete category |
+
+### Technicians (`/api/technicians`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/` | Public | List technicians (`?city=`, `?search=`) |
+| GET | `/:id` | Public | Get technician profile with reviews |
+| PUT | `/profile` | Technician | Update own professional profile |
+
+### Bookings (`/api/bookings`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/` | Protected | Create a new booking |
+| GET | `/` | Protected | Get user's own bookings |
+| PUT | `/:id/status` | Protected | Update booking status (accept/complete/cancel) |
+
+### Reviews (`/api/reviews`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/` | Protected | Submit a review for a completed booking |
+| GET | `/me` | Protected | Get reviews written by current user |
+| GET | `/technician/:techId` | Public | Get all reviews for a technician |
+| PUT | `/:id/reply` | Protected | Technician replies to a review |
+
+### Messages (`/api/messages`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/conversations` | Protected | List all conversations for current user |
+| GET | `/:userId` | Protected | Get message history with a specific user |
+| POST | `/:userId` | Protected | Send a message to a user |
+| PUT | `/:userId/read` | Protected | Mark conversation as read |
+
+### Notifications (`/api/notifications`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/` | Protected | Get all notifications for current user |
+| PUT | `/read-all` | Protected | Mark all notifications as read |
+| PUT | `/:id/read` | Protected | Mark a single notification as read |
+
+### Payments (`/api/payments`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/` | Protected | Create a payment record |
+| GET | `/booking/:bookingId` | Protected | Get payments for a booking |
+| PUT | `/:id` | Admin | Update payment status |
+
+### Contact (`/api/contact`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/` | Public | Submit a contact form message |
+| GET | `/` | Admin | List all contact messages |
+| PUT | `/:id` | Admin | Update contact message status |
+
+### Admin (`/api/admin`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/stats` | Admin | Platform-wide statistics and revenue data |
+| GET | `/users` | Admin | List all users |
+| PUT | `/users/:id` | Admin | Edit a user |
+| DELETE | `/users/:id` | Admin | Delete a user |
+| PUT | `/users/:id/status` | Admin | Activate/deactivate a user |
+| GET | `/technicians` | Admin | List all technicians |
+| PUT | `/technicians/:id/status` | Admin | Approve/reject technician application |
+| GET | `/bookings` | Admin | List all bookings |
+
+---
+
+## 📡 WebSocket (Real-Time) Events
+
+Socket.io runs on the same HTTP server as Express. Connections are authenticated via JWT.
+
+### Connection Flow
+1. Client connects with `{ auth: { token: jwt } }`.
+2. Server middleware verifies the JWT and attaches `socket.user`.
+3. Server tracks online users via an in-memory `Map<userId, socketId>`.
+
+### Events
+
+| Direction | Event | Payload | Description |
+|---|---|---|---|
+| Client → Server | `join_room` | `roomId` | Join a chat room |
+| Client → Server | `leave_room` | `roomId` | Leave a chat room |
+| Client → Server | `typing` | `{ room, isTyping }` | Broadcast typing indicator |
+| Server → Client | `user_typing` | `{ userId, isTyping }` | Typing indicator for chat partner |
+| Server → Client | `new_message` | `messageObject` | New message received |
+| Server → Client | `new_notification` | `notificationObject` | System notification pushed |
+| Server → All | `online_users` | `[userId, ...]` | Updated list of online user IDs |
+
+### Chat Room ID Convention
+Rooms are identified by sorting both user IDs alphabetically and joining them with an underscore:
+```
+roomId = [userId, receiverId].sort().join('_')
 ```
 
 ---
 
-## 🌿 Git Workflow
+## 🧩 Frontend Pages & Components
 
-```
-main                    # Production-ready code
-├── development         # Integration branch
-│   ├── feature/auth    # Authentication features
-│   ├── feature/bookings # Booking system
-│   ├── feature/payments # Payment integration
-│   └── feature/admin   # Admin dashboard
-```
+### Public Pages (No auth required)
+| Page | Route | Description |
+|---|---|---|
+| HomePage | `/` | Hero animation, featured services, categories, stats |
+| ServicesPage | `/services` | Browse/search/filter services by category |
+| ServiceDetailPage | `/services/:slug` | Service details with booking form |
+| TechniciansPage | `/technicians` | Browse/search/filter technicians by city |
+| TechnicianProfilePage | `/technicians/:id` | Full profile with reviews and message button |
+| AboutPage | `/about` | Mission statement, stats, core values |
+| ContactPage | `/contact` | Contact form |
+| FAQPage | `/faq` | Frequently asked questions |
+| LoginPage | `/login` | Authentication with demo credentials |
+| RegisterPage | `/register` | User or technician registration |
 
-### Branch Guidelines
-1. Create feature branches from `development`
-2. Use descriptive names: `feature/`, `fix/`, `hotfix/`
-3. Submit pull requests to `development`
-4. Merge `development` → `main` for releases
+### User Dashboard (Role: `user`)
+| Page | Route | Description |
+|---|---|---|
+| UserDashboard | `/user/dashboard` | Overview with stats and recent bookings |
+| UserBookings | `/user/bookings` | Full booking history with status |
+| UserMessages | `/user/messages` | Real-time chat with technicians |
+| UserProfile | `/user/profile` | Edit profile and upload avatar |
+| UserReviews | `/user/reviews` | Reviews written by the user |
+
+### Technician Dashboard (Role: `technician`)
+| Page | Route | Description |
+|---|---|---|
+| TechDashboard | `/technician/dashboard` | Stats, earnings, and pending requests |
+| TechBookings | `/technician/bookings` | Incoming and completed jobs |
+| TechMessages | `/technician/messages` | Real-time chat with customers |
+| TechProfile | `/technician/profile` | Edit bio, skills, hourly rate |
+| TechEarnings | `/technician/earnings` | Revenue charts and payment history |
+| TechAvailability | `/technician/availability` | Set weekly schedule |
+
+### Admin Dashboard (Role: `admin`)
+| Page | Route | Description |
+|---|---|---|
+| AdminDashboard | `/admin/dashboard` | Global analytics with Recharts |
+| AdminServices | `/admin/services` | Full CRUD for services & categories |
+| AdminUsers | `/admin/users` | User management with activate/deactivate |
+| AdminTechnicians | `/admin/technicians` | Technician approval and management |
+| AdminBookings | `/admin/bookings` | All platform bookings |
+| AdminReports | `/admin/reports` | Revenue reports and charts |
+
+### Context Providers
+| Context | Purpose |
+|---|---|
+| `AuthContext` | JWT management, login/logout, user state, Axios interceptors |
+| `SocketContext` | Socket.io client initialization and reconnection |
+| `ThemeContext` | Dark/light mode toggle via Tailwind's `dark` class |
 
 ---
 
-## 🔮 Future Expansion Roadmap
+## ☁️ Image Storage (Cloudinary)
 
-### Phase 1: Mobile App
-- 📱 **Android App** — React Native / Flutter app using JWT API
-- 📱 **iOS App** — Cross-platform mobile support
-- 🔔 **Push Notifications** — Firebase Cloud Messaging
+All image uploads are handled via **Cloudinary** cloud storage.
 
-### Phase 2: Advanced Features
-- 📍 **Technician Live Tracking** — Real-time GPS tracking on map
-- 🤖 **AI Chatbot** — Automated customer support with NLP
-- 🎤 **Voice Booking** — Book services via voice commands
-- 📊 **Advanced Analytics** — ML-powered demand forecasting
+### How It Works
+1. User uploads an image via the frontend (avatar, service image, or category image).
+2. `multer` parses the multipart form data.
+3. `multer-storage-cloudinary` uploads the file directly to Cloudinary.
+4. **All images are automatically converted to WebP format** for optimal performance.
+5. The full Cloudinary secure URL is saved to the MongoDB document.
+6. The frontend `uploadUrl.js` utility detects absolute URLs and passes them directly to `<img>` tags.
 
-### Phase 3: Business Growth
-- 💳 **Subscription Plans** — Monthly/yearly service packages
-- 🏙️ **Multi-City Support** — Expand to all major Pakistani cities
-- 🌐 **Multi-Language** — Urdu, Sindhi, Punjabi localization
-- 🏢 **Corporate Accounts** — B2B service contracts
-- 📋 **Service Warranty** — Extended warranty tracking
-
-### Phase 4: Ecosystem
-- 👨‍🔧 **Technician Training** — In-app certification courses
-- 🏪 **Parts Marketplace** — Buy repair parts through the app
-- 📈 **Franchise Model** — Expand via franchised operators
-- 🔗 **Third-party Integrations** — Daraz, Foodpanda style partnerships
+### Cloudinary Folder Structure
+```
+fixify/
+├── avatars/      # User and technician profile pictures
+├── services/     # Service card images
+├── categories/   # Category images
+└── misc/         # Other uploads
+```
 
 ---
 
-## 🛡️ Security Features
+## 🛡️ Security
 
 | Feature | Implementation |
-|---------|---------------|
-| Password Hashing | bcrypt via `password_hash()` |
-| CSRF Protection | Token-based with `hash_equals()` |
-| SQL Injection | PDO prepared statements |
-| XSS Prevention | `htmlspecialchars()` output escaping |
-| Session Security | HttpOnly, SameSite, secure cookies |
-| Rate Limiting | File-based request throttling |
-| Login Lockout | 5 attempts → 15 min lockout |
-| Secure Headers | CSP, X-Frame, XSS-Protection |
-| File Upload | Type validation, PHP detection, random names |
-| JWT Auth | HMAC-SHA256 signed tokens |
+|---|---|
+| Password Hashing | bcryptjs with 12 salt rounds |
+| Authentication | JWT access + refresh token pair |
+| Authorization | Role-based middleware (`user`, `technician`, `admin`) |
+| HTTP Headers | Helmet (CSP, X-Frame-Options, XSS Protection) |
+| Rate Limiting | express-rate-limit (configurable window and max) |
+| CORS | Whitelisted frontend origin only |
+| File Upload | Type validation (JPG, PNG, WEBP only), 5MB max |
+| Input Validation | express-validator on API inputs |
+| Password Security | Passwords excluded from all query results via `select: false` |
+
+---
+
+## ⚙️ Setup & Installation
+
+### Prerequisites
+- Node.js v18+
+- MongoDB Atlas account (or local MongoDB)
+- Cloudinary account (free tier works)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/yourusername/fixify.git
+cd fixify
+```
+
+### 2. Backend Setup
+```bash
+cd server
+npm install
+
+# Create .env file (see Environment Variables section below)
+
+# Seed demo data (optional but recommended)
+node seedDemo.js
+
+# Start backend server (port 5000)
+npm run dev
+```
+
+### 3. Frontend Setup
+```bash
+cd client
+npm install
+
+# Start Vite dev server (port 5173)
+npm run dev
+```
+
+### 4. Open the App
+Navigate to `http://localhost:5173` in your browser.
+
+---
+
+## 🔑 Environment Variables
+
+Create a `server/.env` file with the following:
+
+```env
+# Server
+PORT=5000
+NODE_ENV=development
+CLIENT_URL=http://localhost:5173
+
+# Database
+MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/fixify
+
+# Authentication
+JWT_SECRET=your_super_secret_jwt_key
+JWT_EXPIRE=30d
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX=100
+
+# File Upload
+MAX_FILE_SIZE=5242880
+```
+
+---
+
+## 👥 Demo Accounts
+
+Run `node seedDemo.js` in the server directory to populate demo data. All passwords are `password`.
+
+| Role | Email | Use Case |
+|---|---|---|
+| **Admin** | `admin@fixithub.pk` | Full platform management |
+| **User** | `ahmed@example.com` | Booking, reviews, messaging |
+| **User** | `fatima@example.com` | Booking, messaging |
+| **Technician** | `usman@example.com` | Accept jobs, earnings tracking |
+| **Technician** | `ali@example.com` | Profile management, chat |
+
+The seeder populates: 5 users, 4 categories, 6 services, 2 technician profiles, 3 bookings, 3 reviews, 8 chat messages, and 7 notifications — all with Cloudinary-hosted images.
+
+---
+
+## 🌍 Deployment Guide
+
+### Backend → Render / Railway
+1. Create a Web Service pointing to the `server/` directory.
+2. Build command: `npm install`
+3. Start command: `npm start`
+4. Set all environment variables from the section above.
+5. Set `NODE_ENV=production` and `CLIENT_URL=https://your-frontend.vercel.app`.
+
+### Frontend → Vercel / Netlify
+1. Create a project pointing to the `client/` directory.
+2. Framework: Vite (auto-detected).
+3. Build command: `npm run build` — Output directory: `dist`.
+4. Environment variables:
+   - `VITE_API_BASE_URL=https://your-backend.onrender.com/api`
+   - `VITE_UPLOADS_URL=https://your-backend.onrender.com`
+
+---
+
+## 🔮 Future Roadmap
+
+- **Mobile App:** React Native app using the existing Express API
+- **Payment Integration:** Stripe, JazzCash, and EasyPaisa gateway integration
+- **Geolocation:** Map-based technician tracking during service visits
+- **AI Chatbot:** Automated customer support triage
+- **Multi-Language:** Urdu and regional language localization
+- **Push Notifications:** Firebase Cloud Messaging for mobile
 
 ---
 
 ## 📄 License
 
-This project is developed for educational purposes as a university project.
+This project was developed for educational and portfolio purposes. Open-sourced under the MIT License.
 
 ---
 
-**Built with ❤️ in Pakistan** | FixIt Hub Pakistan © 2026
+**Built with ❤️ in Pakistan** | Fixify © 2026

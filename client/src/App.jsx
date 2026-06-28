@@ -36,6 +36,7 @@ import TechBookings from './pages/technician/TechBookings';
 import TechEarnings from './pages/technician/TechEarnings';
 import TechAvailability from './pages/technician/TechAvailability';
 import TechProfile from './pages/technician/TechProfile';
+import TechMessages from './pages/technician/TechMessages';
 
 // Admin Dashboard Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -88,6 +89,7 @@ function App() {
             <Route element={<DashboardLayout />}>
               <Route path="/technician/dashboard" element={<TechDashboard />} />
               <Route path="/technician/bookings" element={<TechBookings />} />
+              <Route path="/technician/messages" element={<TechMessages />} />
               <Route path="/technician/earnings" element={<TechEarnings />} />
               <Route path="/technician/availability" element={<TechAvailability />} />
               <Route path="/technician/profile" element={<TechProfile />} />

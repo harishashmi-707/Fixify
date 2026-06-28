@@ -132,9 +132,7 @@ const ServicesPage = () => {
                         {service.image ? (
                           <img src={getServiceImageUrl(service.image)} alt={service.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-bg-tertiary to-bg-secondary">
-                             <Wrench className="w-12 h-12 text-text-muted opacity-50" />
-                          </div>
+                          <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80" alt="Service Fallback" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         )}
                         <div className="absolute top-4 left-4 bg-bg-primary/80 backdrop-blur-md px-3 py-1 text-xs font-semibold rounded-full border border-border-glass text-accent-cyan">
                           {service.category?.name}

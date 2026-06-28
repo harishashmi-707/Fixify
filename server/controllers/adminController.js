@@ -121,6 +121,53 @@ export const toggleUserStatus = async (req, res, next) => {
   }
 };
 
+// @desc    Update user details
+// @route   PUT /api/admin/users/:id
+// @access  Private/Admin
+export const updateUser = async (req, res, next) => {
+  try {
+    const { name, email, phone, role, city, address, isActive } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { name, email, phone, role, city, address, isActive },
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete user
+// @route   DELETE /api/admin/users/:id
+// @access  Private/Admin
+export const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Delete associated data
+    if (user.role === ROLES.TECHNICIAN) {
+      await Technician.findOneAndDelete({ user: user._id });
+    }
+    await Booking.deleteMany({ user: user._id });
+    // More complex deletion logic could be handled via mongoose middleware
+
+    await user.deleteOne();
+
+    res.status(200).json({ success: true, message: 'User deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Get all technicians (admin view with all statuses)
 // @route   GET /api/admin/technicians
 // @access  Private/Admin

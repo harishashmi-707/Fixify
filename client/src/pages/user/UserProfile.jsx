@@ -15,9 +15,34 @@ const UserProfile = () => {
   });
   const [passwordData, setPasswordData] = useState({ current: '', newPass: '', confirm: '' });
   const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  const fileInputRef = React.useRef(null);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const handlePasswordChange = (e) => setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    setUploadingAvatar(true);
+    try {
+      const res = await api.put('/auth/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success('Avatar updated successfully!');
+      // Force reload to get new avatar from AuthContext
+      window.location.reload();
+    } catch (error) {
+      toast.error('Failed to update avatar');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
@@ -59,11 +84,22 @@ const UserProfile = () => {
           <img 
             src={getAvatarUrl(user?.avatar, user?.name)}
             alt={user?.name}
-            className="w-20 h-20 rounded-full object-cover border-2 border-border-glass"
+            className={`w-20 h-20 rounded-full object-cover border-2 border-border-glass ${uploadingAvatar ? 'opacity-50' : ''}`}
           />
-          <button className="absolute bottom-0 right-0 w-8 h-8 bg-accent-emerald rounded-full flex items-center justify-center text-white shadow-lg hover:bg-emerald-400 transition-colors">
+          <button 
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingAvatar}
+            className="absolute bottom-0 right-0 w-8 h-8 bg-accent-emerald rounded-full flex items-center justify-center text-white shadow-lg hover:bg-emerald-400 transition-colors disabled:opacity-50"
+          >
             <Camera className="w-4 h-4" />
           </button>
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={handleAvatarChange} 
+            accept="image/jpeg, image/png, image/webp" 
+            className="hidden" 
+          />
         </div>
         <div>
           <h3 className="font-bold text-lg">{user?.name}</h3>

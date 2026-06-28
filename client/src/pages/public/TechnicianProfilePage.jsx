@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Star, ShieldCheck, Clock, CheckCircle2, Award, ArrowLeft, Mail, Phone } from 'lucide-react';
+import { MapPin, Star, ShieldCheck, Clock, CheckCircle2, Award, ArrowLeft, Mail, Phone, MessageCircle } from 'lucide-react';
 import { api, useAuth } from '../../contexts/AuthContext';
 import { getAvatarUrl } from '../../utils/uploadUrl';
 
@@ -55,6 +55,10 @@ const TechnicianProfilePage = () => {
               src={getAvatarUrl(tech.user?.avatar, tech.user?.name)} 
               alt={tech.user?.name} 
               className="w-32 h-32 md:w-40 md:h-40 rounded-2xl object-cover border-4 border-bg-secondary shadow-lg z-10 relative" 
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tech.user?.name || 'Tech')}&background=0D9488&color=fff`;
+              }}
             />
             
             <div className="flex-grow z-10 relative w-full">
@@ -75,9 +79,17 @@ const TechnicianProfilePage = () => {
                 {/* Action Buttons */}
                 <div className="flex gap-3">
                    {isAuthenticated ? (
-                     <button className="bg-accent-cyan hover:bg-cyan-400 text-bg-primary font-bold px-6 py-2 rounded-lg transition-colors shadow-glow whitespace-nowrap">
-                       Book Now
-                     </button>
+                     <>
+                       <button
+                         onClick={() => navigate(`/user/messages`, { state: { startChatWith: { _id: tech.user._id, name: tech.user.name, avatar: tech.user.avatar, role: 'technician' } } })}
+                         className="bg-bg-tertiary border border-border-glass hover:border-accent-cyan text-text-primary font-medium px-5 py-2 rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap"
+                       >
+                         <MessageCircle className="w-4 h-4" /> Message
+                       </button>
+                       <button className="bg-accent-cyan hover:bg-cyan-400 text-bg-primary font-bold px-6 py-2 rounded-lg transition-colors shadow-glow whitespace-nowrap">
+                         Book Now
+                       </button>
+                     </>
                    ) : (
                      <Link to="/login" className="bg-bg-tertiary border border-border-glass hover:border-accent-cyan text-text-primary font-medium px-6 py-2 rounded-lg transition-colors">
                        Log in to Book

@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Send, User as UserIcon, Search, Plus, MessageCircle } from 'lucide-react';
 import { api, useAuth } from '../../contexts/AuthContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { getAvatarUrl } from '../../utils/uploadUrl';
 import toast from 'react-hot-toast';
 
-const UserMessages = () => {
+const TechMessages = () => {
   const { user } = useAuth();
   const { socket, onlineUsers } = useSocket();
-  const location = useLocation();
   const [conversations, setConversations] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -17,36 +15,15 @@ const UserMessages = () => {
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
 
-  // New Chat Modal
+  // New Chat
   const [showNewChat, setShowNewChat] = useState(false);
-  const [techSearch, setTechSearch] = useState('');
-  const [availableTechs, setAvailableTechs] = useState([]);
-  const [searchingTechs, setSearchingTechs] = useState(false);
+  const [userSearch, setUserSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchingUsers, setSearchingUsers] = useState(false);
 
   useEffect(() => {
     fetchConversations();
   }, []);
-
-  // Handle navigation from TechnicianProfilePage with startChatWith state
-  useEffect(() => {
-    if (location.state?.startChatWith && !loading) {
-      const techUser = location.state.startChatWith;
-      // Check if we already have a conversation with this user
-      const existing = conversations.find(c => c.user._id === techUser._id);
-      if (existing) {
-        setActiveChat(existing);
-      } else {
-        // Create a temporary conversation entry
-        setActiveChat({
-          user: techUser,
-          lastMessage: null,
-          unreadCount: 0
-        });
-      }
-      // Clear the navigation state so it doesn't re-trigger
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state, loading, conversations]);
 
   useEffect(() => {
     if (activeChat) {
@@ -127,36 +104,43 @@ const UserMessages = () => {
     }
   };
 
-  // New Chat: search available technicians
-  const searchTechnicians = async (query) => {
-    setTechSearch(query);
+  // Search users (bookings' customers) for new chat
+  const searchUsers = async (query) => {
+    setUserSearch(query);
     if (query.length < 1) {
-      setAvailableTechs([]);
+      setSearchResults([]);
       return;
     }
-    setSearchingTechs(true);
+    setSearchingUsers(true);
     try {
-      const res = await api.get(`/technicians?search=${query}`);
-      // Filter out techs we already have conversations with
+      // Technicians can only see their booking customers
+      // We fetch bookings and extract unique users
+      const res = await api.get('/bookings');
+      const bookings = res.data.data || [];
+      const usersMap = new Map();
+      bookings.forEach(b => {
+        if (b.user && b.user.name.toLowerCase().includes(query.toLowerCase())) {
+          usersMap.set(b.user._id, b.user);
+        }
+      });
       const existingIds = conversations.map(c => c.user._id);
-      const techs = (res.data.data || []).filter(t => !existingIds.includes(t.user?._id));
-      setAvailableTechs(techs);
+      setSearchResults(Array.from(usersMap.values()).filter(u => !existingIds.includes(u._id)));
     } catch (e) {
       console.error(e);
     } finally {
-      setSearchingTechs(false);
+      setSearchingUsers(false);
     }
   };
 
-  const startNewChat = (tech) => {
+  const startNewChat = (u) => {
     setActiveChat({
-      user: { _id: tech.user._id, name: tech.user.name, avatar: tech.user.avatar, role: 'technician' },
+      user: { _id: u._id, name: u.name, avatar: u.avatar, role: u.role || 'user' },
       lastMessage: null,
       unreadCount: 0
     });
     setShowNewChat(false);
-    setTechSearch('');
-    setAvailableTechs([]);
+    setUserSearch('');
+    setSearchResults([]);
   };
 
   if (loading) return <div className="p-12 text-center"><div className="animate-pulse h-8 w-8 bg-accent-cyan rounded-full mx-auto"></div></div>;
@@ -171,10 +155,10 @@ const UserMessages = () => {
         {/* Conversations List */}
         <div className="w-full md:w-80 border-r border-border-glass flex flex-col h-full bg-bg-secondary/50">
           <div className="p-4 border-b border-border-glass flex items-center justify-between">
-            <h2 className="font-semibold text-text-primary">Recent Chats</h2>
+            <h2 className="font-semibold text-text-primary">Client Chats</h2>
             <button 
               onClick={() => setShowNewChat(!showNewChat)}
-              className="text-accent-cyan hover:text-cyan-300 transition-colors p-1"
+              className="text-accent-emerald hover:text-emerald-300 transition-colors p-1"
               title="Start new conversation"
             >
               <Plus className="w-5 h-5" />
@@ -188,33 +172,33 @@ const UserMessages = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <input 
                   type="text"
-                  value={techSearch}
-                  onChange={(e) => searchTechnicians(e.target.value)}
-                  placeholder="Search technicians..."
+                  value={userSearch}
+                  onChange={(e) => searchUsers(e.target.value)}
+                  placeholder="Search your customers..."
                   className="input-base pl-9 w-full text-sm py-2"
                   autoFocus
                 />
               </div>
-              {availableTechs.length > 0 && (
+              {searchResults.length > 0 && (
                 <div className="mt-2 max-h-40 overflow-y-auto rounded-lg border border-border-glass bg-bg-primary">
-                  {availableTechs.map(tech => (
+                  {searchResults.map(u => (
                     <button
-                      key={tech._id}
-                      onClick={() => startNewChat(tech)}
+                      key={u._id}
+                      onClick={() => startNewChat(u)}
                       className="w-full flex items-center gap-3 p-3 hover:bg-bg-tertiary transition-colors text-left"
                     >
-                      <img src={getAvatarUrl(tech.user?.avatar, tech.user?.name)} className="w-8 h-8 rounded-full object-cover" alt="" />
+                      <img src={getAvatarUrl(u.avatar, u.name)} className="w-8 h-8 rounded-full object-cover" alt="" />
                       <div>
-                        <div className="text-sm font-medium text-text-primary">{tech.user?.name}</div>
-                        <div className="text-xs text-text-muted">{tech.user?.city} • {tech.skills?.slice(0, 2).join(', ')}</div>
+                        <div className="text-sm font-medium text-text-primary">{u.name}</div>
+                        <div className="text-xs text-text-muted">{u.email}</div>
                       </div>
                     </button>
                   ))}
                 </div>
               )}
-              {searchingTechs && <p className="text-xs text-text-muted mt-2 text-center">Searching...</p>}
-              {techSearch.length > 0 && !searchingTechs && availableTechs.length === 0 && (
-                <p className="text-xs text-text-muted mt-2 text-center">No technicians found</p>
+              {searchingUsers && <p className="text-xs text-text-muted mt-2 text-center">Searching...</p>}
+              {userSearch.length > 0 && !searchingUsers && searchResults.length === 0 && (
+                <p className="text-xs text-text-muted mt-2 text-center">No customers found</p>
               )}
             </div>
           )}
@@ -224,7 +208,7 @@ const UserMessages = () => {
               <div 
                 key={conv.user._id}
                 onClick={() => setActiveChat(conv)}
-                className={`p-4 border-b border-border-glass cursor-pointer transition-colors hover:bg-bg-tertiary flex items-center gap-3 ${activeChat?.user._id === conv.user._id ? 'bg-bg-tertiary border-l-2 border-l-accent-cyan' : ''}`}
+                className={`p-4 border-b border-border-glass cursor-pointer transition-colors hover:bg-bg-tertiary flex items-center gap-3 ${activeChat?.user._id === conv.user._id ? 'bg-bg-tertiary border-l-2 border-l-accent-emerald' : ''}`}
               >
                 <div className="relative">
                   <img src={getAvatarUrl(conv.user.avatar, conv.user.name)} className="w-12 h-12 rounded-full object-cover border border-border-glass" alt="" />
@@ -239,7 +223,7 @@ const UserMessages = () => {
                   <p className="text-sm text-text-muted truncate">{conv.lastMessage?.message || 'Start chatting...'}</p>
                 </div>
                 {conv.unreadCount > 0 && (
-                  <div className="w-5 h-5 bg-accent-cyan rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+                  <div className="w-5 h-5 bg-accent-emerald rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0">
                     {conv.unreadCount}
                   </div>
                 )}
@@ -248,7 +232,7 @@ const UserMessages = () => {
               <div className="p-8 text-center text-text-muted">
                 <MessageCircle className="w-10 h-10 mx-auto mb-3 opacity-20" />
                 <p className="text-sm">No conversations yet.</p>
-                <p className="text-xs mt-1">Click the <strong>+</strong> button above to start chatting with a technician.</p>
+                <p className="text-xs mt-1">Clients will appear here when they message you.</p>
               </div>
             )}
           </div>
@@ -263,7 +247,7 @@ const UserMessages = () => {
                 <img src={getAvatarUrl(activeChat.user.avatar, activeChat.user.name)} className="w-10 h-10 rounded-full object-cover" alt="" />
                 <div>
                   <h3 className="font-semibold text-text-primary">{activeChat.user.name}</h3>
-                  <p className="text-xs text-text-muted capitalize">{activeChat.user.role || 'technician'}</p>
+                  <p className="text-xs text-text-muted capitalize">{activeChat.user.role || 'user'}</p>
                 </div>
                 {onlineUsers.includes(activeChat.user._id?.toString()) && (
                   <span className="ml-auto text-xs text-success flex items-center gap-1">
@@ -284,7 +268,7 @@ const UserMessages = () => {
                   const isMe = msg.sender === user._id || (msg.sender._id && msg.sender._id === user._id);
                   return (
                     <div key={msg._id || idx} className={`flex flex-col max-w-[75%] ${isMe ? 'self-end items-end ml-auto' : 'self-start items-start mr-auto'}`}>
-                      <div className={`px-4 py-2 rounded-2xl ${isMe ? 'bg-accent-cyan text-white rounded-br-none' : 'bg-bg-tertiary text-text-primary rounded-bl-none border border-border-glass'}`}>
+                      <div className={`px-4 py-2 rounded-2xl ${isMe ? 'bg-accent-emerald text-white rounded-br-none' : 'bg-bg-tertiary text-text-primary rounded-bl-none border border-border-glass'}`}>
                         {msg.message}
                       </div>
                       <span className="text-[10px] text-text-muted mt-1 px-1">
@@ -304,12 +288,12 @@ const UserMessages = () => {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message..." 
-                    className="input-base flex-1 rounded-full px-5 py-3"
+                    className="input-base flex-1 rounded-full px-5 py-3 focus:border-accent-emerald focus:ring-accent-emerald/20"
                   />
                   <button 
                     type="submit" 
                     disabled={!newMessage.trim()}
-                    className="w-12 h-12 rounded-full bg-accent-cyan hover:bg-cyan-400 text-white flex items-center justify-center shrink-0 disabled:opacity-50 transition-colors shadow-lg"
+                    className="w-12 h-12 rounded-full bg-accent-emerald hover:bg-emerald-400 text-white flex items-center justify-center shrink-0 disabled:opacity-50 transition-colors shadow-lg"
                   >
                     <Send className="w-5 h-5 ml-1" />
                   </button>
@@ -320,7 +304,7 @@ const UserMessages = () => {
             <div className="flex-1 flex flex-col items-center justify-center text-text-muted p-8">
               <UserIcon className="w-16 h-16 opacity-20 mb-4" />
               <p className="text-lg mb-2">Select a conversation to start messaging</p>
-              <p className="text-sm">Or click the <strong>+</strong> button to start a new chat with a technician.</p>
+              <p className="text-sm">Or click the <strong>+</strong> button to message a customer.</p>
             </div>
           )}
         </div>
@@ -329,4 +313,4 @@ const UserMessages = () => {
   );
 };
 
-export default UserMessages;
+export default TechMessages;

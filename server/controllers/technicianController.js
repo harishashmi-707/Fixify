@@ -65,3 +65,40 @@ export const getTechnicianById = async (req, res, next) => {
     next(error);
   }
 };
+
+// @desc    Update logged in technician profile
+// @route   PUT /api/technicians/profile
+// @access  Private/Technician
+export const updateMyProfile = async (req, res, next) => {
+  try {
+    const { bio, hourlyRate, skills, availableDays, startTime, endTime } = req.body;
+    
+    let technician = await Technician.findOne({ user: req.user.id });
+    
+    if (!technician) {
+      return res.status(404).json({ success: false, message: 'Technician profile not found' });
+    }
+
+    technician.bio = bio !== undefined ? bio : technician.bio;
+    technician.hourlyRate = hourlyRate !== undefined ? hourlyRate : technician.hourlyRate;
+    technician.skills = skills !== undefined ? skills : technician.skills;
+    
+    if (availableDays || startTime || endTime) {
+      technician.availability = {
+        ...technician.availability,
+        days: availableDays || technician.availability?.days,
+        startTime: startTime || technician.availability?.startTime,
+        endTime: endTime || technician.availability?.endTime,
+      };
+    }
+
+    await technician.save();
+
+    res.status(200).json({
+      success: true,
+      data: technician,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

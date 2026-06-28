@@ -118,9 +118,13 @@ const TechDashboard = () => {
                   
                   <div className="flex items-start gap-4 flex-grow">
                     <img 
-                      src={getAvatarUrl(request.user?.avatar, request.user?.name)} 
-                      alt={request.user?.name} 
-                      className="w-12 h-12 rounded-full object-cover border border-border-glass shrink-0" 
+                      src={getAvatarUrl(request.user?.avatar, request.user?.name || 'User')} 
+                      alt={request.user?.name || 'User'} 
+                      className="w-12 h-12 rounded-full object-cover border border-border-glass shrink-0 bg-bg-tertiary" 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(request.user?.name || 'User')}&background=0D9488&color=fff`;
+                      }}
                     />
                     <div>
                       <div className="flex items-center gap-2 mb-1">

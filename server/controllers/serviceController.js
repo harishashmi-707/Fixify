@@ -57,11 +57,65 @@ export const getServiceBySlug = async (req, res, next) => {
 // @access  Private/Admin
 export const createService = async (req, res, next) => {
   try {
-    const service = await Service.create(req.body);
+    const data = { ...req.body };
+    if (req.file) {
+      data.image = req.file.path;
+    }
+    const service = await Service.create(data);
 
     res.status(201).json({
       success: true,
       data: service,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update a service
+// @route   PUT /api/services/:id
+// @access  Private/Admin
+export const updateService = async (req, res, next) => {
+  try {
+    const data = { ...req.body };
+    if (req.file) {
+      data.image = req.file.path;
+    }
+
+    const service = await Service.findByIdAndUpdate(req.params.id, data, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!service) {
+      return res.status(404).json({ success: false, message: 'Service not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: service,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete a service
+// @route   DELETE /api/services/:id
+// @access  Private/Admin
+export const deleteService = async (req, res, next) => {
+  try {
+    const service = await Service.findById(req.params.id);
+
+    if (!service) {
+      return res.status(404).json({ success: false, message: 'Service not found' });
+    }
+
+    await service.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: 'Service deleted successfully'
     });
   } catch (error) {
     next(error);

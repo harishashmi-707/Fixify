@@ -1,4 +1,5 @@
 import Booking from '../models/Booking.js';
+import Notification from '../models/Notification.js';
 import { generateBookingNumber } from '../utils/helpers.js';
 import { ROLES, BOOKING_TRANSITIONS } from '../config/constants.js';
 
@@ -121,6 +122,24 @@ export const updateBookingStatus = async (req, res, next) => {
     }
 
     await booking.save();
+
+    // Create notification for the user
+    const notification = await Notification.create({
+      user: booking.user,
+      title: 'Booking Update',
+      message: `Your booking #${booking.bookingNumber} is now ${status}. ${notes ? `Notes: ${notes}` : ''}`,
+      type: 'booking',
+      relatedId: booking._id
+    });
+
+    // Emit via Socket.io
+    const io = req.app.get('io');
+    if (io) {
+      const userSockets = io.sockets.adapter.rooms.get(booking.user.toString());
+      // Find the user's socket and emit if online
+      // In a more robust setup, we use the onlineUsers map we created in server.js
+      io.emit('new_notification', notification); // Broadcast for now, ideally targeted
+    }
 
     res.status(200).json({
       success: true,

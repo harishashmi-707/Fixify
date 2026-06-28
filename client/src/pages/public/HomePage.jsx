@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Wrench, Zap, Droplets, Snowflake, Laptop, ChevronRight, Star, ShieldCheck, Clock } from 'lucide-react';
+import HeroAnimation from '../../components/HeroAnimation';
 
 const categories = [
   { id: 1, name: 'Mobile Repair', icon: Wrench, count: 120, slug: 'mobile-repair' },
@@ -30,65 +31,73 @@ const HomePage = () => {
         </div>
 
         <div className="container relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border-glass bg-bg-tertiary/50 backdrop-blur-md mb-8"
-            >
-              <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse"></span>
-              <span className="text-sm font-medium text-text-secondary">Pakistan's #1 Home Services Platform</span>
-            </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Content */}
+            <div className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border-glass bg-bg-tertiary/50 backdrop-blur-md mb-8"
+              >
+                <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse"></span>
+                <span className="text-sm font-medium text-text-secondary">Pakistan's #1 Home Services Platform</span>
+              </motion.div>
 
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-5xl lg:text-7xl mb-6 tracking-tight"
-            >
-              Expert Home Services, <br />
-              <span className="text-gradient">Just a Click Away.</span>
-            </motion.h1>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-5xl lg:text-6xl xl:text-7xl mb-6 tracking-tight"
+              >
+                Expert Home Services, <br />
+                <span className="text-gradient">Just a Click Away.</span>
+              </motion.h1>
 
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg text-text-muted mb-10 max-w-2xl mx-auto"
-            >
-              From AC repairs to deep cleaning, book trusted professionals at transparent prices. We bring convenience to your doorstep.
-            </motion.p>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="text-lg text-text-muted mb-10 max-w-2xl"
+              >
+                From AC repairs to deep cleaning, book trusted professionals at transparent prices. We bring convenience to your doorstep.
+              </motion.p>
 
-            {/* Search Bar */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="glass-panel p-2 flex flex-col md:flex-row gap-2 max-w-3xl mx-auto relative z-20 shadow-glow mt-10"
-            >
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted w-5 h-5" />
-                <input 
-                  type="text" 
-                  placeholder="What do you need help with?" 
-                  className="w-full bg-transparent border-none py-3 pl-12 pr-4 text-text-primary focus:outline-none placeholder:text-text-muted"
-                />
-              </div>
-              <div className="w-px bg-border-glass hidden md:block my-2"></div>
-              <div className="flex-1 relative border-t border-border-glass md:border-none">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted w-5 h-5" />
-                <select className="w-full bg-transparent border-none py-3 pl-12 pr-4 text-text-primary focus:outline-none appearance-none cursor-pointer">
-                  <option value="" className="text-black">Select City</option>
-                  <option value="islamabad" className="text-black">Islamabad</option>
-                  <option value="lahore" className="text-black">Lahore</option>
-                  <option value="karachi" className="text-black">Karachi</option>
-                </select>
-              </div>
-              <button className="bg-accent-emerald hover:bg-emerald-400 text-white font-semibold py-3 px-8 rounded-lg transition-colors shadow-lg">
-                Search
-              </button>
-            </motion.div>
+              {/* Search Bar */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="glass-panel p-2 flex flex-col sm:flex-row gap-2 relative z-20 shadow-glow"
+              >
+                <div className="flex-1 relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted w-5 h-5" />
+                  <input 
+                    type="text" 
+                    placeholder="What do you need help with?" 
+                    className="w-full bg-transparent border-none py-3 pl-12 pr-4 text-text-primary focus:outline-none placeholder:text-text-muted"
+                  />
+                </div>
+                <div className="w-px bg-border-glass hidden sm:block my-2"></div>
+                <div className="flex-1 relative border-t border-border-glass sm:border-none">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted w-5 h-5" />
+                  <select className="w-full bg-transparent border-none py-3 pl-12 pr-4 text-text-primary focus:outline-none appearance-none cursor-pointer">
+                    <option value="" className="text-black">Select City</option>
+                    <option value="islamabad" className="text-black">Islamabad</option>
+                    <option value="lahore" className="text-black">Lahore</option>
+                    <option value="karachi" className="text-black">Karachi</option>
+                  </select>
+                </div>
+                <button className="bg-accent-emerald hover:bg-emerald-400 text-white font-semibold py-3 px-8 rounded-lg transition-colors shadow-lg">
+                  Search
+                </button>
+              </motion.div>
+            </div>
+
+            {/* Right Column - Animation */}
+            <div className="hidden lg:block w-full">
+              <HeroAnimation />
+            </div>
           </div>
         </div>
       </section>

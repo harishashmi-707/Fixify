@@ -1,33 +1,55 @@
 import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import path from 'path';
+import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = file.fieldname === 'avatar' ? 'avatars' : 'services';
-    cb(null, path.join(__dirname, '..', 'uploads', dir));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-  },
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const fileFilter = (req, file, cb) => {
-  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-  if (allowed.includes(file.mimetype)) {
-    cb(null, true);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    let folder = 'fixify/';
+    if (file.fieldname === 'avatar') folder += 'avatars';
+    else if (file.fieldname === 'serviceImage') folder += 'services';
+    else if (file.fieldname === 'categoryImage') folder += 'categories';
+    else folder += 'misc';
+    
+    return {
+      folder: folder,
+      format: 'webp', // Convert all images to webp as requested
+      public_id: `${file.fieldname}-${Date.now()}`
+    };
+  }
+});
+
+const checkFileType = (file, cb) => {
+  const filetypes = /jpg|jpeg|png|webp/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (extname && mimetype) {
+    return cb(null, true);
   } else {
-    cb(new Error('Only image files (JPEG, PNG, WebP, GIF) are allowed'), false);
+    cb(new Error('Images only! (JPG, JPEG, PNG, WEBP)'));
   }
 };
 
-export const upload = multer({
+const upload = multer({
   storage,
-  fileFilter,
-  limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024 },
+  limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5242880 }, // Default 5MB
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+  },
 });
+
+export default upload;

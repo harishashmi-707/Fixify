@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Search, MoreVertical, Shield, UserX, UserCheck } from 'lucide-react';
+import { Users, Search, MoreVertical, Shield, UserX, UserCheck, Edit2, Trash2, X } from 'lucide-react';
 import { api } from '../../contexts/AuthContext';
 import { getAvatarUrl } from '../../utils/uploadUrl';
 import toast from 'react-hot-toast';
@@ -9,6 +9,12 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
+
+  // Edit Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', role: '', city: '', isActive: true });
+  const [saving, setSaving] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -32,6 +38,45 @@ const AdminUsers = () => {
       toast.success('User status updated');
     } catch {
       toast.error('Failed to update status');
+    }
+  };
+
+  const handleEditClick = (user) => {
+    setEditingUser(user);
+    setFormData({
+      name: user.name,
+      email: user.email,
+      phone: user.phone || '',
+      role: user.role,
+      city: user.city || '',
+      isActive: user.isActive
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await api.put(`/admin/users/${editingUser._id}`, formData);
+      toast.success('User updated successfully');
+      setIsEditModalOpen(false);
+      fetchUsers();
+    } catch (e) {
+      toast.error('Failed to update user');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone and will delete all associated data.')) return;
+    try {
+      await api.delete(`/admin/users/${id}`);
+      toast.success('User deleted');
+      fetchUsers();
+    } catch (e) {
+      toast.error('Failed to delete user');
     }
   };
 
@@ -101,9 +146,15 @@ const AdminUsers = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 text-text-secondary">{new Date(u.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
+                       <button onClick={() => handleEditClick(u)} className="text-text-muted hover:text-accent-cyan transition-colors p-2">
+                         <Edit2 className="w-4 h-4" />
+                       </button>
                        <button onClick={() => toggleStatus(u._id)} className="text-text-muted hover:text-text-primary transition-colors p-2" title={u.isActive ? 'Deactivate User' : 'Activate User'}>
                          {u.isActive ? <UserX className="w-4 h-4 text-danger" /> : <UserCheck className="w-4 h-4 text-success" />}
+                       </button>
+                       <button onClick={() => handleDeleteUser(u._id)} className="text-text-muted hover:text-danger transition-colors p-2">
+                         <Trash2 className="w-4 h-4" />
                        </button>
                     </td>
                   </tr>
@@ -118,6 +169,59 @@ const AdminUsers = () => {
           </div>
         )}
       </div>
+
+      {/* Edit Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-bg-primary rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-border-glass">
+            <div className="flex justify-between items-center p-4 border-b border-border-glass">
+              <h3 className="font-semibold text-lg">Edit User</h3>
+              <button onClick={() => setIsEditModalOpen(false)} className="text-text-muted hover:text-text-primary">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleUpdateUser} className="p-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Name</label>
+                <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="input-base w-full" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Email</label>
+                <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="input-base w-full" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Phone</label>
+                <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="input-base w-full" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Role</label>
+                <select value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} className="input-base w-full">
+                  <option value="user">User</option>
+                  <option value="technician">Technician</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1">City</label>
+                <select value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className="input-base w-full">
+                  <option value="">Select City</option>
+                  <option value="islamabad">Islamabad</option>
+                  <option value="lahore">Lahore</option>
+                  <option value="karachi">Karachi</option>
+                </select>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="userActive" checked={formData.isActive} onChange={e => setFormData({...formData, isActive: e.target.checked})} className="rounded bg-bg-secondary border-border-glass text-accent-cyan focus:ring-accent-cyan" />
+                <label htmlFor="userActive" className="text-sm font-medium text-text-primary">Active Account</label>
+              </div>
+              <div className="pt-4 flex justify-end gap-3 border-t border-border-glass">
+                <button type="button" onClick={() => setIsEditModalOpen(false)} className="btn-secondary">Cancel</button>
+                <button type="submit" disabled={saving} className="btn-primary">{saving ? 'Saving...' : 'Update User'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

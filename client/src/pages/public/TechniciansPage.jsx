@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, MapPin, Star, Filter, CheckCircle2 } from 'lucide-react';
-import { api } from '../../contexts/AuthContext';
+import { Search, MapPin, Star, Filter, CheckCircle2, MessageCircle } from 'lucide-react';
+import { api, useAuth } from '../../contexts/AuthContext';
 import { getAvatarUrl } from '../../utils/uploadUrl';
 
 const TechniciansPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [technicians, setTechnicians] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -109,15 +111,23 @@ const TechniciansPage = () => {
               >
                 <div className="flex items-center gap-4 mb-4 pb-4 border-b border-border-glass">
                   <div className="relative">
-                    <img src={getAvatarUrl(tech.user?.avatar, tech.user?.name)} alt={tech.user?.name} className="w-16 h-16 rounded-full object-cover border-2 border-border-glass" />
+                    <img 
+                      src={getAvatarUrl(tech.user?.avatar, tech.user?.name || 'Unknown')} 
+                      alt={tech.user?.name || 'Technician'} 
+                      className="w-16 h-16 rounded-full object-cover border-2 border-border-glass bg-bg-tertiary" 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tech.user?.name || 'Tech')}&background=0D9488&color=fff`;
+                      }}
+                    />
                     <div className="absolute -bottom-1 -right-1 bg-bg-primary rounded-full p-0.5">
                       <CheckCircle2 className="w-5 h-5 text-accent-cyan" />
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">{tech.user?.name}</h3>
+                    <h3 className="font-bold text-lg">{tech.user?.name || 'Unknown Technician'}</h3>
                     <div className="flex items-center gap-1 text-sm text-text-muted mt-1">
-                      <MapPin className="w-3 h-3" /> {tech.user?.city}
+                      <MapPin className="w-3 h-3" /> {tech.user?.city || 'Location unavailable'}
                     </div>
                   </div>
                 </div>
@@ -139,12 +149,23 @@ const TechniciansPage = () => {
                     <span className="font-bold text-text-primary">{tech.avgRating.toFixed(1)}</span>
                     <span className="text-xs text-text-muted">({tech.totalReviews})</span>
                   </div>
-                  <Link 
-                    to={`/technicians/${tech._id}`}
-                    className="text-sm font-medium text-accent-cyan hover:text-cyan-400 hover:underline"
-                  >
-                    View Profile
-                  </Link>
+                  <div className="flex items-center gap-3">
+                    {isAuthenticated && (
+                      <button
+                        onClick={() => navigate('/user/messages', { state: { startChatWith: { _id: tech.user?._id, name: tech.user?.name, avatar: tech.user?.avatar, role: 'technician' } } })}
+                        className="text-text-muted hover:text-accent-cyan transition-colors"
+                        title="Send Message"
+                      >
+                        <MessageCircle className="w-5 h-5" />
+                      </button>
+                    )}
+                    <Link 
+                      to={`/technicians/${tech._id}`}
+                      className="text-sm font-medium text-accent-cyan hover:text-cyan-400 hover:underline"
+                    >
+                      View Profile
+                    </Link>
+                  </div>
                 </div>
               </motion.div>
             ))}
